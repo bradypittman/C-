@@ -4,7 +4,6 @@
  *  Created on: Sep 10, 2017
  *      Author: keith
  */
-
 #ifndef ARRAY_FUNCTIONS_H_
 #define ARRAY_FUNCTIONS_H_
 #include <iostream>
