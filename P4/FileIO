@@ -1,0 +1,58 @@
+/*
+ * FileReader.cpp
+ *
+ *  Created on: Oct 8, 2017
+ *      Author: keith
+ */
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
+
+#include "../327_proj3_test-master/includes/FileIO.h"
+#include "../327_proj3_test-master/includes/constants.h"
+
+using namespace std;
+
+int KP_FileIO::getFileContents(const std::string &filename, std::string &contents)
+{
+  ifstream inFile;
+  inFile.open(filename);//open the input file
+  if (!inFile.is_open())
+  {
+    return COULD_NOT_OPEN_FILE_TO_READ;
+  }
+
+  string lineStr;
+  while (getline(inFile, lineStr))
+  {
+    contents += lineStr;
+  }
+  inFile.close();
+  
+  return SUCCESS;
+}
+
+int KP_FileIO::writeVectortoFile(const std::string filename,std::vector<std::string> &myEntryVector)
+{
+  ofstream out(filename);
+
+  if (!out.is_open())
+  {
+    return COULD_NOT_OPEN_FILE_TO_WRITE;
+  }
+
+  for (std::vector<std::string>::iterator it = myEntryVector.begin(); it != myEntryVector.end(); it++)
+  {
+    out << *it<<endl;
+    if (out.bad())
+    {
+      return COULD_NOT_OPEN_FILE_TO_WRITE;      
+    }
+  }
+
+  out.close();
+  return SUCCESS;
+}
+
+
