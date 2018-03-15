@@ -1,0 +1,130 @@
+/*
+ * StringParserClass.cpp
+ *
+ *  Created on: Oct 8, 2017
+ *      Author: keith
+ */
+
+#include <string>
+#include <string.h>
+
+#include "../327_proj3_test-master/includes/StringParserClass.h"
+#include "../327_proj3_test-master/includes/constants.h"
+
+
+KP_StringParserClass::StringParserClass::StringParserClass(void)
+  : pStartTag(0), pEndTag(0), areTagsSet(false)
+{}
+
+
+KP_StringParserClass::StringParserClass::~StringParserClass(void)
+{
+  cleanup();
+}
+
+
+int KP_StringParserClass::StringParserClass::setTags(const char* pStart, const char* pEnd)
+{
+  if (pStart == 0 || pEnd == 0)
+  {
+    return ERROR_TAGS_NULL;
+  }
+  
+  cleanup();
+
+  int len = strlen(pStart) + 1;
+  pStartTag = new char[len];
+  strncpy_s(pStartTag, len, pStart, len);
+  *(pStartTag + len) = 0;
+
+  len = strlen(pEnd) + 1;
+  pEndTag = new char[len];
+  strncpy_s(pEndTag, len, pEnd, len);
+  *(pEndTag + len) = 0;
+
+  return SUCCESS;
+}
+
+
+int KP_StringParserClass::StringParserClass::getDataBetweenTags(char* pDataToSearchThru, std::vector<std::string>& myVector)
+{
+  myVector.clear();
+  if (pStartTag == 0 || pStartTag == 0)
+  {
+    return ERROR_TAGS_NULL;
+  }
+
+  if (pDataToSearchThru == 0)
+  {
+    return ERROR_DATA_NULL;
+  }
+
+  char* cursor = pDataToSearchThru;
+  char* start = 0;
+  char* end = 0;
+
+  char* endOfInput(pDataToSearchThru);
+  endOfInput += strlen(pDataToSearchThru);
+
+  while(findTag(cursor, start, end) == SUCCESS)
+  {
+    char* startCopy(start);
+    startCopy += strlen(pStartTag);
+
+    int len = end - startCopy;
+    char* buffer = new char[len + 1];
+
+    strncpy_s(buffer, len + 1, startCopy, len);
+    *(buffer + len) = 0;
+
+    std::string s(buffer);
+
+    delete[]buffer;
+
+    myVector.push_back(s);
+
+    cursor = end + strlen(pEndTag);
+    if (cursor >= endOfInput)
+    {
+      break;
+    }
+  }
+
+  return SUCCESS;
+}
+
+
+void KP_StringParserClass::StringParserClass::cleanup()
+{
+  if (pStartTag != 0)
+  {
+    delete[]pStartTag;
+    pStartTag = 0;
+  }
+
+
+  if (pEndTag != 0)
+  {
+    delete[]pEndTag;
+    pEndTag = 0;
+  }
+}
+
+
+int KP_StringParserClass::StringParserClass::findTag(char *pTagToLookFor, char *&pStart, char *&pEnd)
+{
+  if (pStartTag == 0 || pStartTag == 0)
+  {
+    return ERROR_TAGS_NULL;
+  }
+
+  pStart = strstr(pTagToLookFor, pStartTag);
+  pEnd = strstr(pTagToLookFor, pEndTag);
+
+  if (pStart == 0 || pEnd == 0)
+  {
+    return FAIL;
+  }
+
+  return SUCCESS;
+}
