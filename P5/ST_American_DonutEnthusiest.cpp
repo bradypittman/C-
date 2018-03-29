@@ -1,7 +1,6 @@
 /*
  * ST_American_DonutEnthusiest.cpp
  *
- *  Created on: Nov 8, 2017
  *      Author: Brady
  */
 
